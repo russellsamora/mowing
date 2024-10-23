@@ -1,0 +1,94 @@
+<script>
+	import S from "$utils/simulator.js";
+
+	let { size } = $props();
+	let element = $state(undefined);
+	let ready = $state(false);
+	let keys = $state({});
+
+	let canvasEl;
+	let ctx;
+
+	const sim = S();
+
+	function onKeydown(e) {
+		if (e.key === "ArrowUp") keys.up = true;
+		else if (e.key === "ArrowDown") keys.down = true;
+		else if (e.key === "ArrowLeft") keys.left = true;
+		else if (e.key === "ArrowRight") keys.right = true;
+	}
+
+	function onKeyup(e) {
+		if (e.key === "ArrowUp") keys.up = false;
+		else if (e.key === "ArrowDown") keys.down = false;
+		else if (e.key === "ArrowLeft") keys.left = false;
+		else if (e.key === "ArrowRight") keys.right = false;
+	}
+
+	function resize() {
+		if (ready) sim.resize(size);
+	}
+
+	function update() {
+		const arr = Object.keys(keys).filter((d) => keys[d]);
+		if (arr.length) sim.steer(arr);
+		requestAnimationFrame(update);
+	}
+
+	function paintPixels(pixels) {
+		ctx.fillStyle = "lightgreen";
+		pixels.forEach((p) => ctx.fillRect(p.x, p.y, 1, 1));
+	}
+
+	function init() {
+		ctx = canvasEl.getContext("2d");
+		sim.on("ready", () => (ready = true));
+		sim.on("pixels", paintPixels);
+		sim.init(element);
+		requestAnimationFrame(update);
+	}
+
+	$effect(init);
+
+	$effect(resize);
+</script>
+
+<!-- TODO replace with buttons -->
+<svelte:window onkeydown={onKeydown} onkeyup={onKeyup} />
+<div class="c">
+	<div class="bg">
+		<canvas width="1000" height="1000" bind:this={canvasEl}></canvas>
+	</div>
+	<div
+		class="fg"
+		bind:this={element}
+		style:width="{size}px"
+		style:height="{size}px"
+	></div>
+</div>
+
+<style>
+	.c {
+		display: flex;
+		justify-content: center;
+		position: relative;
+	}
+
+	.bg {
+		width: 100%;
+		height: 100%;
+		position: absolute;
+		top: 0;
+		left: 0;
+		background: green;
+	}
+
+	canvas {
+		width: 100%;
+		height: 100%;
+	}
+
+	.fg {
+		position: relative;
+	}
+</style>

@@ -5,7 +5,7 @@ import debounce from "lodash.debounce";
  * example:
  * <p
  * 	use:resize
- * 	on:resize={() => console.log("enter")}
+ * 	on:resize={() => console.log("resize")}
  * >
  *
  * optional params { debounce, exclude }
@@ -45,6 +45,8 @@ export default function resize(node, params = {}) {
 	};
 
 	setObserver(params);
+
+	if (params.start) node.dispatchEvent(new CustomEvent("resize"));
 
 	return {
 		update(params) {
