@@ -69,11 +69,7 @@ export default function simulator() {
 			render: {
 				fillStyle: "#a0a",
 				sprite: {
-					texture: "assets/sprites/mower.png",
-					xOffset: 0,
-					yOffset: 0,
-					xScale: 100 / 32,
-					yScale: 100 / 32
+					texture: "assets/sprites/mower.png"
 				}
 			},
 			label: "mower",
