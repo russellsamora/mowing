@@ -1,11 +1,13 @@
 <script>
 	import S from "$utils/simulator.js";
+	import loadImage from "$utils/loadImage.js";
 
 	let { size } = $props();
 	let element = $state(undefined);
 	let ready = $state(false);
 	let keys = $state({});
 
+	let img;
 	let canvasMowed;
 	let ctxMowed;
 	let canvas;
@@ -61,9 +63,11 @@
 
 		// Draw the image (scaled and translated correctly)
 		ctx.drawImage(canvasMowed, 0, 0);
+		// draw image from a png
+		// ctx.drawImage(img, 0, 0);
 	}
 
-	function init() {
+	async function init() {
 		ctx = canvas.getContext("2d");
 		ctxMowed = canvasMowed.getContext("2d");
 		sim.on("ready", () => (ready = true));
@@ -71,6 +75,7 @@
 		sim.on("panzoom", panZoom);
 		sim.init(element);
 		requestAnimationFrame(update);
+		img = await loadImage("assets/images/keanu.jpg");
 	}
 
 	$effect(init);

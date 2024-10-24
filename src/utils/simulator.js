@@ -197,11 +197,12 @@ export default function simulator() {
 		// todo track mowing
 		trackPixels();
 
-		const scale = SCALE(mower.speed);
+		const scale = mower.speed > 0.01 ? 1.5 : 1;
+		// const scale =  SCALE(mower.speed);
+
 		panCamera();
 		zoomCamera(scale);
 
-		// Matter.Render.startViewTransform(render);
 		emitter.emit("panzoom", render.bounds);
 	}
 

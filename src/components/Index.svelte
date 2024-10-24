@@ -17,6 +17,8 @@
 	}
 </script>
 
+<p>How fast can you mow this lawn?</p>
+
 <div class="c">
 	<figure
 		use:resize={{ debounce: 250, start: true }}
@@ -39,5 +41,14 @@
 	figure {
 		width: 100%;
 		max-width: 600px;
+	}
+
+	p {
+		font-size: clamp(24px, 2.75vw, 64px);
+		max-width: 600px;
+		margin: auto;
+		line-height: 1;
+		text-align: center;
+		margin-bottom: 32px;
 	}
 </style>
