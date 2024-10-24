@@ -44,11 +44,10 @@
 	}
 
 	p {
-		font-size: clamp(24px, 2.75vw, 64px);
+		font-size: clamp(24px, 2.5vw, 64px);
 		max-width: 600px;
-		margin: auto;
+		margin: 16px auto;
 		line-height: 1;
 		text-align: center;
-		margin-bottom: 32px;
 	}
 </style>
