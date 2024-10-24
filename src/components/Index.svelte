@@ -15,8 +15,6 @@
 	function onFigureResize() {
 		figureWidth = element.offsetWidth;
 	}
-
-	$inspect(viewport.width);
 </script>
 
 <div class="c">

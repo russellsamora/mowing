@@ -36,7 +36,7 @@
 	}
 
 	function paintPixels(pixels) {
-		ctx.fillStyle = "lightgreen";
+		ctx.fillStyle = "#0c0";
 		pixels.forEach((p) => ctx.fillRect(p.x, p.y, 1, 1));
 	}
 
@@ -80,7 +80,7 @@
 		position: absolute;
 		top: 0;
 		left: 0;
-		background: green;
+		background: #0a0;
 	}
 
 	canvas {

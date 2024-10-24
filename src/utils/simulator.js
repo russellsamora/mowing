@@ -59,15 +59,22 @@ export default function simulator() {
 	function createMower() {
 		const frictionAir = FRICTION;
 
-		const x = SIZE / 2;
-		const y = SIZE / 2;
+		const x = SIZE / 10;
+		const y = SIZE / 10;
 		const w = S.mowerW;
 		const h = S.mowerH;
 
 		mower = Matter.Bodies.rectangle(x, y, w, h, {
 			frictionAir,
 			render: {
-				fillStyle: "black"
+				fillStyle: "#a0a",
+				sprite: {
+					texture: "assets/sprites/mower.png",
+					xOffset: 0,
+					yOffset: 0,
+					xScale: 100 / 32,
+					yScale: 100 / 32
+				}
 			},
 			label: "mower",
 			sleepThreshold: Infinity,
@@ -81,24 +88,25 @@ export default function simulator() {
 	}
 
 	function createObstacles() {
-		// const a = Matter.Bodies.circle(
-		// 	S.center,
-		// 	S.center,
-		// 	S.boardR,
-		// 	{
-		// 		isStatic: true,
-		// 		isSensor: true,
-		// 		render: {
-		// 			visible,
-		// 			fillStyle: "rgba(0,0,0,0)",
-		// 			lineWidth: 1
-		// 		},
-		// 		label: "surface"
-		// 	},
-		// 	64
-		// );
-		// Matter.Composite.add(world, [
-		// ]);
+		const a = Matter.Bodies.rectangle(300, 300, 200, 100, {
+			isStatic: true,
+			isSleeping: true,
+			render: {
+				fillStyle: "#000",
+				opacity: 1
+			},
+			label: "obstacle"
+		});
+
+		const b = Matter.Bodies.circle(700, 600, 150, {
+			isStatic: true,
+			isSleeping: true,
+			render: {
+				fillStyle: "#000"
+			},
+			label: "obstacle"
+		});
+		Matter.Composite.add(world, [a, b]);
 	}
 
 	function afterRender() {
@@ -115,9 +123,8 @@ export default function simulator() {
 		const pixelX = Math.round(x);
 		const pixelY = Math.round(y);
 
-		// find all pixels within a radius of S.mowerR
 		const newPixels = [];
-		const r = S.mowerR / 2 - 1;
+		const r = S.mowerR - 1;
 		const r2 = r * r;
 		for (let i = -r; i < r; i++) {
 			for (let j = -r; j < r; j++) {
@@ -145,7 +152,6 @@ export default function simulator() {
 	function afterUpdate() {
 		// todo track mowing
 		trackPixels();
-		console.log("a");
 	}
 
 	function collisionActive(event) {
@@ -234,18 +240,14 @@ export default function simulator() {
 
 	function steer(keys) {
 		// Handle rotation
-		if (keys.includes("left")) {
-			Matter.Body.rotate(mower, -TURN_ANGLE);
-		} else if (keys.includes("right")) {
-			Matter.Body.rotate(mower, TURN_ANGLE);
+		if (keys.includes("up") || keys.includes("down")) {
+			if (keys.includes("left")) Matter.Body.rotate(mower, -TURN_ANGLE);
+			else if (keys.includes("right")) Matter.Body.rotate(mower, TURN_ANGLE);
 		}
 
 		// Apply forward or reverse force based on input
-		if (keys.includes("up")) {
-			applyForceInDirection("forward");
-		} else if (keys.includes("down")) {
-			applyForceInDirection("reverse");
-		}
+		if (keys.includes("up")) applyForceInDirection("forward");
+		else if (keys.includes("down")) applyForceInDirection("reverse");
 
 		// Cap the speed to prevent the mower from going too fast
 		capSpeed(MAX_SPEED);
@@ -369,7 +371,8 @@ export default function simulator() {
 		// Matter.Events.on(engine, "collisionStart", collisionStart);
 		Matter.Events.on(engine, "afterUpdate", afterUpdate);
 		createMower();
-		// createObstacles();
+		createObstacles();
+
 		emitter.emit("ready");
 	}
 
