@@ -1,11 +1,16 @@
 import Matter from "matter-js";
 import * as S from "$data/specs.js";
+import { scaleLinear } from "d3";
 
 const SIZE = 1000;
 const TURN_ANGLE = 0.01;
 const MAX_SPEED = 5;
 const FORCE_MAGNITUDE = 0.005;
 const FRICTION = 0.1;
+const SCALE = scaleLinear()
+	.domain([0.1, MAX_SPEED / 2])
+	.clamp(true)
+	.range([1, 1.5]);
 
 // import { Howl } from "howler";
 // import { muted } from "$stores/misc.js";
@@ -59,8 +64,8 @@ export default function simulator() {
 	function createMower() {
 		const frictionAir = FRICTION;
 
-		const x = SIZE / 10;
-		const y = SIZE / 10;
+		const x = S.mowerW;
+		const y = S.mowerH;
 		const w = S.mowerW;
 		const h = S.mowerH;
 
@@ -105,8 +110,31 @@ export default function simulator() {
 		Matter.Composite.add(world, [a, b]);
 	}
 
-	function afterRender() {
-		const ctx = render.context;
+	function createFence() {
+		// 4 thin rectangles to form at edge of boundary
+		const fences = [];
+		for (let i = 0; i < 4; i++) {
+			const w = i % 2 === 0 ? SIZE : 10;
+			const h = i % 2 === 1 ? SIZE : 10;
+			const x = i % 2 === 0 ? SIZE / 2 : i === 1 ? SIZE : 0;
+			const y = i % 2 === 1 ? SIZE / 2 : i === 2 ? SIZE : 0;
+
+			const f = Matter.Bodies.rectangle(x, y, w, h, {
+				isStatic: true,
+				isSleeping: true,
+				label: "fence",
+				render: {
+					fillStyle: "#000"
+				}
+			});
+			fences.push(f);
+		}
+		Matter.Composite.add(world, fences);
+	}
+
+	function beforeRender() {
+		// const ctx = render.context;
+		emitter.emit("panzoom", render.context.getTransform());
 	}
 
 	function beforeUpdate() {
@@ -145,9 +173,36 @@ export default function simulator() {
 		emitter.emit("pixels", newPixels);
 	}
 
+	function panCamera() {
+		render.bounds.min.x = mower.position.x - SIZE / 2;
+		render.bounds.min.y = mower.position.y - SIZE / 2;
+		render.bounds.max.x = mower.position.x + SIZE / 2;
+		render.bounds.max.y = mower.position.y + SIZE / 2;
+	}
+
+	function zoomCamera(scale) {
+		const centerX = (render.bounds.min.x + render.bounds.max.x) / 2;
+		const centerY = (render.bounds.min.y + render.bounds.max.y) / 2;
+
+		const newWidth = SIZE / scale;
+		const newHeight = SIZE / scale;
+
+		render.bounds.min.x = centerX - newWidth / 2;
+		render.bounds.min.y = centerY - newHeight / 2;
+		render.bounds.max.x = centerX + newWidth / 2;
+		render.bounds.max.y = centerY + newHeight / 2;
+	}
+
 	function afterUpdate() {
 		// todo track mowing
 		trackPixels();
+
+		const scale = SCALE(mower.speed);
+		panCamera();
+		zoomCamera(scale);
+
+		// Matter.Render.startViewTransform(render);
+		emitter.emit("panzoom", render.bounds);
 	}
 
 	function collisionActive(event) {
@@ -362,11 +417,12 @@ export default function simulator() {
 		Matter.Runner.run(runner, engine);
 		Matter.Render.run(render);
 
-		// Matter.Events.on(render, "afterRender", afterRender);
+		// Matter.Events.on(render, "beforeRender", beforeRender);
 		// Matter.Events.on(engine, "collisionActive", collisionActive);
 		// Matter.Events.on(engine, "collisionStart", collisionStart);
 		Matter.Events.on(engine, "afterUpdate", afterUpdate);
 		createMower();
+		createFence();
 		createObstacles();
 
 		emitter.emit("ready");
