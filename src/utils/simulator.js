@@ -193,9 +193,9 @@ export default function simulator() {
 		// todo track mowing
 		trackPixels();
 
+		const scale = 1;
 		// const scale = mower.speed > 0.01 ? 1.5 : 1;
 		// const scale =  SCALE(mower.speed);
-		// const scale = 1;
 
 		// panCamera();
 		// zoomCamera(scale);
@@ -205,35 +205,37 @@ export default function simulator() {
 
 	function afterRender() {
 		if (!ready) return;
-		const dpr = window.devicePixelRatio || 1;
-		const scale = render.canvas.width / 1000 / dpr;
-		renderMower(scale);
+
+		// Apply Matter.js view transform (for pan/zoom)
+		Matter.Render.startViewTransform(render);
+
+		// Render the mower with the correct scale and transformations
+		renderMower();
+
+		// Reset the transform to avoid affecting other draws
+		Matter.Render.endViewTransform(render);
 	}
 
-	function renderMower(scale) {
-		// Get the rendering context
-		const x = mower.position.x;
-		const y = mower.position.y;
+	function renderMower() {
+		const ctx = render.context;
+
+		const { x, y } = mower.position;
 		const w = S.mowerW;
 		const h = S.mowerH;
 
 		const frame = Math.floor((Date.now() / 200) % 1); // Alternate frames
 		const frameX = frame * S.mowerW; // X offset on spritesheet
 
-		const ctx = render.context;
+		// ctx.save();
 
-		ctx.save();
-
-		// Scale canvas context to fit the world size
-		ctx.scale(scale, scale);
-
-		// Translate and rotate based on world coordinates
+		// Translate and rotate based on the mower's world position and angle
 		ctx.translate(x, y);
 		ctx.rotate(mower.angle);
 
+		// Draw the appropriate frame of the mower sprite
 		ctx.drawImage(mowerImage, frameX, 0, w, h, -w / 2, -h / 2, w, h);
 
-		ctx.restore();
+		// ctx.restore();
 	}
 
 	function collisionActive(event) {
