@@ -34,10 +34,10 @@
 		if (ready) sim.resize(size);
 	}
 
-	function update() {
+	function tick() {
 		const arr = Object.keys(keys).filter((d) => keys[d]);
 		if (arr.length) sim.steer(arr);
-		requestAnimationFrame(update);
+		requestAnimationFrame(tick);
 	}
 
 	function paintPixels(pixels) {
@@ -45,7 +45,7 @@
 		pixels.forEach((p) => ctxMowed.fillRect(p.x, p.y, 1, 1));
 	}
 
-	function panZoom(bounds) {
+	function update(bounds) {
 		const boundsWidth = bounds.max.x - bounds.min.x;
 		const boundsHeight = bounds.max.y - bounds.min.y;
 
@@ -72,9 +72,9 @@
 		ctxMowed = canvasMowed.getContext("2d");
 		sim.on("ready", () => (ready = true));
 		sim.on("pixels", paintPixels);
-		sim.on("panzoom", panZoom);
+		sim.on("update", update);
 		sim.init(element);
-		requestAnimationFrame(update);
+		requestAnimationFrame(tick);
 		img = await loadImage("assets/images/keanu.jpg");
 	}
 

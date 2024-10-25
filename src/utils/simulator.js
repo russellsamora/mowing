@@ -1,6 +1,7 @@
 import Matter from "matter-js";
 import * as S from "$data/specs.js";
 import { scaleLinear } from "d3";
+import loadImage from "$utils/loadImage.js";
 
 const SIZE = 1000;
 const TURN_ANGLE = 0.01;
@@ -60,6 +61,8 @@ export default function simulator() {
 	let mower;
 	let pixels;
 	let state;
+	let mowerImage;
+	let ready;
 
 	function createMower() {
 		const frictionAir = FRICTION;
@@ -73,9 +76,7 @@ export default function simulator() {
 			frictionAir,
 			render: {
 				fillStyle: "#a0a",
-				sprite: {
-					texture: "assets/sprites/mower.png"
-				}
+				visible: false
 			},
 			label: "mower",
 			sleepThreshold: Infinity,
@@ -130,11 +131,6 @@ export default function simulator() {
 			fences.push(f);
 		}
 		Matter.Composite.add(world, fences);
-	}
-
-	function beforeRender() {
-		// const ctx = render.context;
-		emitter.emit("panzoom", render.context.getTransform());
 	}
 
 	function beforeUpdate() {
@@ -197,13 +193,47 @@ export default function simulator() {
 		// todo track mowing
 		trackPixels();
 
-		const scale = mower.speed > 0.01 ? 1.5 : 1;
+		// const scale = mower.speed > 0.01 ? 1.5 : 1;
 		// const scale =  SCALE(mower.speed);
+		// const scale = 1;
 
-		panCamera();
-		zoomCamera(scale);
+		// panCamera();
+		// zoomCamera(scale);
 
-		emitter.emit("panzoom", render.bounds);
+		emitter.emit("update", render.bounds);
+	}
+
+	function afterRender() {
+		if (!ready) return;
+		const dpr = window.devicePixelRatio || 1;
+		const scale = render.canvas.width / 1000 / dpr;
+		renderMower(scale);
+	}
+
+	function renderMower(scale) {
+		// Get the rendering context
+		const x = mower.position.x;
+		const y = mower.position.y;
+		const w = S.mowerW;
+		const h = S.mowerH;
+
+		const frame = Math.floor((Date.now() / 200) % 1); // Alternate frames
+		const frameX = frame * S.mowerW; // X offset on spritesheet
+
+		const ctx = render.context;
+
+		ctx.save();
+
+		// Scale canvas context to fit the world size
+		ctx.scale(scale, scale);
+
+		// Translate and rotate based on world coordinates
+		ctx.translate(x, y);
+		ctx.rotate(mower.angle);
+
+		ctx.drawImage(mowerImage, frameX, 0, w, h, -w / 2, -h / 2, w, h);
+
+		ctx.restore();
 	}
 
 	function collisionActive(event) {
@@ -389,6 +419,12 @@ export default function simulator() {
 		}
 	}
 
+	async function loadSprites() {
+		mowerImage = await loadImage("assets/sprites/mower.png");
+		ready = true;
+		emitter.emit("ready");
+	}
+
 	function init(element) {
 		pixels = Array.from({ length: SIZE }, () => Array(SIZE).fill(false));
 
@@ -418,15 +454,14 @@ export default function simulator() {
 		Matter.Runner.run(runner, engine);
 		Matter.Render.run(render);
 
-		// Matter.Events.on(render, "beforeRender", beforeRender);
 		// Matter.Events.on(engine, "collisionActive", collisionActive);
 		// Matter.Events.on(engine, "collisionStart", collisionStart);
+		Matter.Events.on(render, "afterRender", afterRender);
 		Matter.Events.on(engine, "afterUpdate", afterUpdate);
 		createMower();
 		createFence();
 		createObstacles();
-
-		emitter.emit("ready");
+		loadSprites();
 	}
 
 	return {

@@ -17,7 +17,13 @@
 	}
 </script>
 
-<p>How fast can you mow this lawn?</p>
+<p>
+	How fast can you <select>
+		<option>mow this lawn?</option>
+		<option>vacuum this rug?</option>
+		<option>shave Keanu’s face?</option>
+	</select>
+</p>
 
 <div class="c">
 	<figure
@@ -44,10 +50,15 @@
 	}
 
 	p {
-		font-size: clamp(24px, 2.5vw, 64px);
+		font-size: clamp(24px, 2vw, 64px);
 		max-width: 600px;
 		margin: 16px auto;
 		line-height: 1;
 		text-align: center;
+	}
+
+	select {
+		display: inline-block;
+		margin-left: 8px;
 	}
 </style>
