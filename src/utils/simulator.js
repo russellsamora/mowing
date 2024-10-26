@@ -324,10 +324,10 @@ export default function simulator() {
 
 	function steer(keys) {
 		// Handle rotation
-		if (keys.includes("up") || keys.includes("down")) {
-			if (keys.includes("left")) Matter.Body.rotate(mower, -TURN_ANGLE);
-			else if (keys.includes("right")) Matter.Body.rotate(mower, TURN_ANGLE);
-		}
+		// if (keys.includes("up") || keys.includes("down")) {
+		if (keys.includes("left")) Matter.Body.rotate(mower, -TURN_ANGLE);
+		else if (keys.includes("right")) Matter.Body.rotate(mower, TURN_ANGLE);
+		// }
 
 		// Apply forward or reverse force based on input
 		if (keys.includes("up")) applyForceInDirection("forward");
