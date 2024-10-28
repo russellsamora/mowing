@@ -58,17 +58,19 @@ export default function simulator() {
 	let runner;
 	let render;
 	let muteOverride;
-	let mower;
 	let pixels;
 	let state;
 	let mowerImage;
 	let ready;
 
+	let mower;
+	let fences;
+
 	function createMower() {
 		const frictionAir = FRICTION;
 
-		const x = S.mowerW;
-		const y = S.mowerH;
+		const x = SIZE / 2;
+		const y = S.mowerR * 3;
 		const w = S.mowerW;
 		const h = S.mowerH;
 
@@ -113,7 +115,7 @@ export default function simulator() {
 
 	function createFence() {
 		// 4 thin rectangles to form at edge of boundary
-		const fences = [];
+		fences = [];
 		for (let i = 0; i < 4; i++) {
 			const w = i % 2 === 0 ? SIZE : 10;
 			const h = i % 2 === 1 ? SIZE : 10;
@@ -125,11 +127,13 @@ export default function simulator() {
 				isSleeping: true,
 				label: "fence",
 				render: {
-					fillStyle: "#000"
+					fillStyle: "#000",
+					visible: false
 				}
 			});
 			fences.push(f);
 		}
+
 		Matter.Composite.add(world, fences);
 	}
 
@@ -138,12 +142,6 @@ export default function simulator() {
 	}
 
 	function trackPixels() {
-		// let { x, y } = mower.position;
-
-		// the mower width is 150, the height is 100
-		// i want to tracked pixels to be in the right third of that 150x100 rectangle
-		// include angle
-
 		const angle = mower.angle;
 		let x = mower.position.x;
 		let y = mower.position.y;
@@ -155,7 +153,7 @@ export default function simulator() {
 		const pixelY = Math.round(y);
 
 		const newPixels = [];
-		const r = S.mowerR - 1;
+		const r = S.mowerR;
 		const r2 = r * r;
 		for (let i = -r; i < r; i++) {
 			for (let j = -r; j < r; j++) {
@@ -170,9 +168,6 @@ export default function simulator() {
 				}
 			}
 		}
-
-		// if (pixelX >= 0 && pixelX < SIZE && pixelY >= 0 && pixelY < SIZE)
-		// 	pixels[pixelX][pixelY] = true;
 
 		// log percent of pixels mowed
 		// const totalPixels = SIZE * SIZE;
@@ -204,7 +199,7 @@ export default function simulator() {
 		// todo track mowing
 		trackPixels();
 
-		const scale = 1;
+		// const scale = 1;
 		// const scale = mower.speed > 0.01 ? 1.5 : 1;
 		// const scale =  SCALE(mower.speed);
 

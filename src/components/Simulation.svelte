@@ -87,10 +87,11 @@
 <svelte:window onkeydown={onKeydown} onkeyup={onKeyup} />
 <div class="c">
 	<div class="bg">
-		<img src="assets/images/keanu.jpg" alt="keanu face" />
+		<!-- <img src="assets/images/keanu.jpg" alt="keanu face" /> -->
 		<canvas class="mowed" width="1000" height="1000" bind:this={canvasMowed}
 		></canvas>
 		<canvas width="1000" height="1000" bind:this={canvas}></canvas>
+		<img class="border" src="assets/sprites/border.png" alt="border" />
 	</div>
 	<div
 		class="fg"
@@ -136,7 +137,6 @@
 		position: absolute;
 		top: 0;
 		left: 0;
-		opacity: 0;
 	}
 
 	.fg {
