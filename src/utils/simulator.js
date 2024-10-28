@@ -138,7 +138,18 @@ export default function simulator() {
 	}
 
 	function trackPixels() {
-		const { x, y } = mower.position;
+		// let { x, y } = mower.position;
+
+		// the mower width is 150, the height is 100
+		// i want to tracked pixels to be in the right third of that 150x100 rectangle
+		// include angle
+
+		const angle = mower.angle;
+		let x = mower.position.x;
+		let y = mower.position.y;
+
+		x = x + (Math.cos(angle) * S.mowerW) / 6;
+		y = y + (Math.sin(angle) * S.mowerW) / 6;
 
 		const pixelX = Math.round(x);
 		const pixelY = Math.round(y);
@@ -164,8 +175,8 @@ export default function simulator() {
 		// 	pixels[pixelX][pixelY] = true;
 
 		// log percent of pixels mowed
-		const totalPixels = SIZE * SIZE;
-		const mowedPixels = pixels.flat().filter((p) => p).length;
+		// const totalPixels = SIZE * SIZE;
+		// const mowedPixels = pixels.flat().filter((p) => p).length;
 		emitter.emit("pixels", newPixels);
 	}
 
@@ -213,6 +224,7 @@ export default function simulator() {
 		renderMower();
 
 		// Reset the transform to avoid affecting other draws
+
 		Matter.Render.endViewTransform(render);
 	}
 
@@ -233,7 +245,17 @@ export default function simulator() {
 		ctx.rotate(mower.angle);
 
 		// Draw the appropriate frame of the mower sprite
-		ctx.drawImage(mowerImage, frameX, 0, w, h, -w / 2, -h / 2, w, h);
+		ctx.drawImage(
+			mowerImage,
+			frameX,
+			0,
+			mowerImage.width,
+			mowerImage.height,
+			-w / 2,
+			-h / 2,
+			w,
+			h
+		);
 
 		// ctx.restore();
 	}
@@ -325,6 +347,11 @@ export default function simulator() {
 	function steer(keys) {
 		// Handle rotation
 		// if (keys.includes("up") || keys.includes("down")) {
+		// make point of transform the right middle of the mower
+		// const p = {
+		// 	x: mower.position.x + S.mowerW / 2,
+		// 	y: mower.position.y
+		// };
 		if (keys.includes("left")) Matter.Body.rotate(mower, -TURN_ANGLE);
 		else if (keys.includes("right")) Matter.Body.rotate(mower, TURN_ANGLE);
 		// }
