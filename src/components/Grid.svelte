@@ -41,7 +41,7 @@
 
 	.cell {
 		border: 0.5px solid var(--color-bg);
-		background: #ccc;
+		background: green;
 	}
 
 	.obstacle {
@@ -49,6 +49,6 @@
 	}
 
 	.visited {
-		background: #000;
+		background: yellowgreen;
 	}
 </style>
