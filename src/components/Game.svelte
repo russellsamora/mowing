@@ -6,7 +6,6 @@
 	let path = $state([{ x: 0, y: 0 }]);
 
 	function onKeydown(e) {
-		return false;
 		const keys = ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"];
 		if (!keys.includes(e.key)) return;
 
@@ -29,5 +28,5 @@
 	}
 </script>
 
-<Grid {size} {path}></Grid>
+<Grid {size} {path} perspective={true}></Grid>
 <svelte:window onkeydown={onKeydown} />
