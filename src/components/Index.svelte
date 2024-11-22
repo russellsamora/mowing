@@ -35,7 +35,7 @@
 		padding: 0 16px;
 	}
 
-	:global(.c p) {
+	:global(.c p, .c h1) {
 		max-width: 640px;
 		margin: 32px auto;
 	}

@@ -6,6 +6,7 @@
 	let path = $state([{ x: 0, y: 0 }]);
 
 	function onKeydown(e) {
+		return false;
 		const keys = ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"];
 		if (!keys.includes(e.key)) return;
 

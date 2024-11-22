@@ -42,6 +42,7 @@
 	.cell {
 		border: 0.5px solid var(--color-bg);
 		background: green;
+		position: relative;
 	}
 
 	.obstacle {
