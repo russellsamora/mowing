@@ -73,7 +73,7 @@
 
 	figure.perspective {
 		perspective-origin: 50% 100%;
-		transform: scale(0.85);
+		transform: scale(0.9);
 	}
 
 	.grid {
@@ -93,7 +93,7 @@
 	}
 
 	.perspective .grid {
-		transform: rotateX(45deg);
+		transform: rotateX(40deg);
 	}
 
 	.cell {
