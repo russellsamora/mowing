@@ -49,8 +49,14 @@
 				data-y={y}
 			>
 				<div class="texture"></div>
+				<div class="grass"></div>
 			</div>
 		{/each}
+
+		<div class="cube" style="--x: {latest.x}; --y: {latest.y};">
+			<div class="face top"></div>
+			<div class="face front"></div>
+		</div>
 	</div>
 </figure>
 
@@ -83,16 +89,31 @@
 
 	.cell {
 		background: linear-gradient(135deg, #008000, darkgreen);
+		/* background: green; */
 		position: relative;
 	}
 
 	.cell.visited {
+		/* background: yellowgreen; */
 		background: linear-gradient(135deg, yellowgreen, green);
 	}
 
 	.cell.active {
-		background: darkmagenta;
+		/* background: darkmagenta; */
 	}
+
+	/* .cell.active:after,
+	.cell.before:after {
+		position: absolute;
+		content: "";
+		top: 50%;
+		left: 50%;
+		width: 90%;
+		height: 90%;
+		transform: translate(-50%, -50%);
+		background: magenta;
+		border-radius: 25%;
+	} */
 
 	.texture {
 		position: absolute;
@@ -106,8 +127,69 @@
 		opacity: 0.75;
 	}
 
+	.grass {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background: url("assets/images/grass.png");
+		pointer-events: none;
+		transform: scale(1) translateY(-10%);
+		display: none;
+	}
+
+	.visited .grass {
+		background: url("assets/images/grass-cut.png");
+	}
+
 	.obstacle {
 		background: linear-gradient(135deg, darkred, red);
-		transform: translateZ(-20px);
+	}
+
+	.cube {
+		--width: 64px;
+		--face: 32px;
+		position: absolute;
+		width: var(--width);
+		height: var(--width);
+		transform-style: preserve-3d;
+		transform: rotateX(30deg) rotateY(0deg) rotateZ(0deg) translateY(0)
+			scale(0.8);
+		top: calc(var(--y) * var(--width));
+		left: calc(var(--x) * var(--width));
+		/* animation: infinite 5s spin linear; */
+	}
+
+	.face {
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		backface-visibility: hidden;
+	}
+
+	.face.top {
+		width: 100%;
+		height: 100%;
+		transform: translateZ(var(--face));
+		background: magenta;
+		border-radius: 8px;
+	}
+
+	.face.front {
+		width: 100%;
+		height: 75%;
+		transform: rotateX(-90deg) translateZ(var(--face)) translateY(-8px);
+		border-radius: 8px;
+		background: darkmagenta;
+	}
+
+	@keyframes spin {
+		from {
+			transform: rotateX(45deg) rotateY(0deg) rotateZ(0deg);
+		}
+		to {
+			transform: rotateX(45deg) rotateY(360deg) rotateZ(0deg);
+		}
 	}
 </style>
