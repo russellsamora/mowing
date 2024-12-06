@@ -52,7 +52,8 @@
 				<div class="grass"></div>
 			</div>
 		{/each}
-
+	</div>
+	<div class="grid mower">
 		<div class="cube" style="--x: {latest.x}; --y: {latest.y};">
 			<div class="face top"></div>
 			<div class="face front"></div>
@@ -81,6 +82,14 @@
 		grid-template-columns: repeat(var(--size), 1fr);
 		grid-template-rows: repeat(var(--size), 1fr);
 		transition: all 0.5s ease-in-out;
+	}
+
+	.grid.mower {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
 	}
 
 	.perspective .grid {
@@ -148,16 +157,19 @@
 	}
 
 	.cube {
-		--width: 64px;
-		--face: 32px;
-		position: absolute;
-		width: var(--width);
-		height: var(--width);
+		/* position: absolute; */
+		/* width: var(--width);
+		height: var(--width); */
 		transform-style: preserve-3d;
+		transform-origin: center bottom;
 		transform: rotateX(30deg) rotateY(0deg) rotateZ(0deg) translateY(0)
-			scale(0.8);
-		top: calc(var(--y) * var(--width));
-		left: calc(var(--x) * var(--width));
+			scale(1, 1.5);
+		grid-row: calc(var(--y) + 1);
+		grid-column: calc(var(--x) + 1);
+		/* set position on grid with x,y */
+
+		/* top: calc(var(--y) * var(--width)); */
+		/* left: calc(var(--x) * var(--width)); */
 		/* animation: infinite 5s spin linear; */
 	}
 
@@ -172,7 +184,7 @@
 		width: 100%;
 		height: 100%;
 		transform: translateZ(var(--face));
-		background: magenta;
+		background: darkmagenta;
 		border-radius: 8px;
 	}
 
@@ -181,7 +193,7 @@
 		height: 75%;
 		transform: rotateX(-90deg) translateZ(var(--face)) translateY(-8px);
 		border-radius: 8px;
-		background: darkmagenta;
+		background: magenta;
 	}
 
 	@keyframes spin {
