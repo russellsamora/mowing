@@ -74,6 +74,7 @@
 	figure.perspective {
 		perspective-origin: 50% 100%;
 		transform: scale(0.9);
+		margin-top: -128px;
 	}
 
 	.grid {
