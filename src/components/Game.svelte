@@ -4,12 +4,16 @@
 	import { mode } from "$runes/misc.svelte.js";
 
 	const size = 10;
+	const targetCount = 100;
 	let position = $state({ x: 0, y: 0 });
 	let path = $state([{ x: 0, y: 0 }]);
+	let visited = $state({});
+	let visitedCount = $derived(Object.keys(visited).length + 1);
+	let complete = $derived(visitedCount === targetCount);
 
 	// TODO on complete mode.game = false;
 
-	function onreveal() {
+	function reveal() {
 		mode.game = false;
 		document.getElementById("more").classList.add("visible");
 	}
@@ -28,12 +32,18 @@
 		position.x = Math.max(0, Math.min(size - 1, position.x));
 		position.y = Math.max(0, Math.min(size - 1, position.y));
 		path.push({ x: position.x, y: position.y });
+		visited[position.x + "," + position.y] = true;
+		// get length of visited
 	}
+
+	$effect(() => {
+		if (complete) reveal();
+	});
 </script>
 
 <p class="skip">
 	<small>
-		<a href="#more" onclick={onreveal}>just skip to results please</a>
+		<a href="#more" onclick={reveal}>just skip to results please</a>
 	</small>
 </p>
 
