@@ -16,22 +16,23 @@
 		// TODO only do this if game is being played
 		e.preventDefault();
 	}
+	let offsetWidth = $state(0);
 </script>
 
 <svelte:window onkeydown={onKeydown} />
 
-<div class="c">
+<div class="c" bind:offsetWidth style="--margin: {offsetWidth * -0.1}px;">
 	<div class="keypad">
 		<div class="row">
-			<button>&uarr;</button>
+			<button onpointerdown={() => onmove("ArrowUp")}>&uarr;</button>
 		</div>
 		<div class="row">
-			<button>&larr;</button>
+			<button onpointerdown={() => onmove("ArrowLeft")}>&larr;</button>
 			<div class="spacer"></div>
-			<button>&rarr;</button>
+			<button onpointerdown={() => onmove("ArrowRight")}>&rarr;</button>
 		</div>
 		<div class="row">
-			<button>&darr;</button>
+			<button onpointerdown={() => onmove("ArrowDown")}>&darr;</button>
 		</div>
 	</div>
 
@@ -42,24 +43,42 @@
 
 <style>
 	.c {
-		margin-top: -128px;
+		margin: 0 auto;
+		width: var(--grid-width);
+		max-width: var(--grid-max-width);
+		margin-top: var(--margin);
 	}
 
 	.keypad {
 		display: flex;
 		flex-direction: column;
+		position: relative;
+		z-index: var(--z-top);
 	}
 
 	.keyboard {
 		display: none;
 		text-align: center;
 		color: var(--color-fg-light);
+		transform: translateY(-100%);
+	}
+
+	.keyboard p {
+		margin: 0;
 	}
 
 	.row {
 		display: flex;
 		justify-content: center;
 	}
+	/* 
+	.row:nth-of-type(2) {
+		transform: translate(0, -50%);
+	}
+
+	.row:nth-of-type(3) {
+		transform: translate(0, -100%);
+	} */
 
 	button,
 	.spacer {

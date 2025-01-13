@@ -38,6 +38,9 @@
 
 	/* "1" second duration */
 	--1s: 1ms;
+
+	--grid-width: min(80svw, 80svh);
+	--grid-max-width: 640px;
 }
 
 /* dark theme */

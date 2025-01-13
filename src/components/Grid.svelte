@@ -23,6 +23,7 @@
 	});
 
 	let latest = $derived(path[path.length - 1]);
+	let offsetWidth = $state(0);
 
 	// let currentCell = $state({ left: 0, top: 0 });
 
@@ -36,7 +37,11 @@
 	// });
 </script>
 
-<figure style="--size: {size};" class:perspective>
+<figure
+	style="--size: {size}; --margin: {offsetWidth * -0.2}px;"
+	class:perspective
+	bind:offsetWidth
+>
 	<div class="grid">
 		{#each cells as { obstacle, visited, x, y }}
 			{@const active = x === latest.x && y === latest.y}
@@ -63,8 +68,8 @@
 
 <style>
 	figure {
-		width: min(80svw, 80svh);
-		max-width: 640px;
+		width: var(--grid-width);
+		max-width: var(--grid-max-width);
 		margin: 0 auto;
 		perspective: calc(min(80svw, 80svh) * 2);
 		transition: all 0.5s ease-in-out;
@@ -74,7 +79,7 @@
 	figure.perspective {
 		perspective-origin: 50% 100%;
 		transform: scale(0.9);
-		margin-top: -128px;
+		margin-top: var(--margin);
 	}
 
 	.grid {
