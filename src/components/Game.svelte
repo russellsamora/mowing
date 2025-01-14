@@ -11,11 +11,18 @@
 	let visitedCount = $derived(Object.keys(visited).length + 1);
 	let complete = $derived(visitedCount === targetCount);
 
-	// TODO on complete mode.game = false;
-
 	function reveal() {
 		mode.game = false;
-		document.getElementById("more").classList.add("visible");
+		if (complete)
+			document
+				.querySelectorAll("span.you")
+				.forEach((el) => el.classList.add("visible"));
+		else
+			document
+				.querySelectorAll("span.skip")
+				.forEach((el) => el.classList.add("visible"));
+
+		document.getElementById("results").classList.add("visible");
 	}
 
 	function onmove(key) {
@@ -43,7 +50,7 @@
 
 <p class="skip">
 	<small>
-		<a href="#more" onclick={reveal}>just skip to results please</a>
+		<a href="#results" onclick={reveal}>just skip to results please</a>
 	</small>
 </p>
 

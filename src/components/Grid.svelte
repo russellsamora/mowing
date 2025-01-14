@@ -71,7 +71,7 @@
 		width: var(--grid-width);
 		max-width: var(--grid-max-width);
 		margin: 0 auto;
-		perspective: calc(min(80svw, 80svh) * 2);
+		perspective: calc(var(--grid-width) * 2);
 		transition: all 0.5s ease-in-out;
 		position: relative;
 	}

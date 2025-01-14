@@ -76,7 +76,12 @@
   html {
     overflow-y: auto;
     scrollbar-gutter: stable;
+		scroll-behavior: smooth;
   }
+}
+
+html, body {
+	min-height: 101vh;
 }
 
 h1 {
@@ -112,10 +117,19 @@ p {
 	font-weight: 400;
 }
 
-#more {
+#results {
+	display: none;
+	padding-top: 32px;
+}
+
+#results.visible {
+	display: block;
+}
+
+span.you, span.skip {
 	display: none;
 }
 
-#more.visible {
-	display: block;
+span.you.visible, span.skip.visible {
+	display: inline;
 }

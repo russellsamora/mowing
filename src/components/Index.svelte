@@ -1,11 +1,14 @@
 <script>
 	import { getContext } from "svelte";
 	import Game from "$components/Game.svelte";
+	import Video from "$components/Video.svelte";
+	import Img from "$components/Img.svelte";
+	import Result from "$components/Result.svelte";
 	import CMS from "$components/helpers/CMS.svelte";
 	const copy = getContext("copy");
 
 	const { body } = copy;
-	const components = { Game };
+	const components = { Game, Video, Result, Img };
 </script>
 
 <div class="byline">
@@ -35,9 +38,9 @@
 		padding: 0 16px;
 	}
 
-	:global(.c p, .c h1) {
-		max-width: 640px;
+	:global(.c p, .c h1, .c figure) {
 		margin: 32px auto;
+		max-width: var(--grid-max-width);
 	}
 
 	@media (min-width: 960px) {
