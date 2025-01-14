@@ -5,8 +5,7 @@
 	const defaultCells = Array(size ** 2)
 		.fill()
 		.map((_, i) => ({
-			x: i % size,
-			y: Math.floor(i / size),
+			pos: [i % size, Math.floor(i / size)],
 			obstacle: false,
 			visited: false
 		}));
@@ -15,8 +14,7 @@
 		const all = defaultCells.map((c) => ({ ...c }));
 
 		path.forEach((p, i) => {
-			// todo should we just be smart and use arrays?
-			const c = all.find((c) => c.x === p.x && c.y === p.y);
+			const c = all.find((c) => c.pos[0] === p[0] && c.pos[1] === p[1]);
 			c.visited = true;
 		});
 		return all;
@@ -43,8 +41,10 @@
 	bind:offsetWidth
 >
 	<div class="grid">
-		{#each cells as { obstacle, visited, x, y }}
-			{@const active = x === latest.x && y === latest.y}
+		{#each cells as { obstacle, visited, pos }}
+			{@const x = pos[0]}
+			{@const y = pos[1]}
+			{@const active = x === latest[0] && y === latest[1]}
 			<div
 				class="cell"
 				class:obstacle
@@ -59,7 +59,7 @@
 		{/each}
 	</div>
 	<div class="grid mower">
-		<div class="cube" style="--x: {latest.x}; --y: {latest.y};">
+		<div class="cube" style="--x: {latest[0]}; --y: {latest[1]};">
 			<div class="face top"></div>
 			<div class="face front"></div>
 		</div>

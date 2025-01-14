@@ -1,14 +1,14 @@
 <script>
 	import { MediaQuery } from "svelte/reactivity";
 
-	let { onmove, mode } = $props();
+	let { onmove, active } = $props();
 
 	const hover = new MediaQuery("hover: hover");
 	const pointer = new MediaQuery("pointer: fine");
 	let desktop = $derived(hover && pointer);
 
 	function onKeydown(e) {
-		if (!mode.game) return;
+		if (!active) return;
 		const keys = ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"];
 		if (!keys.includes(e.key)) return;
 		onmove(e.key);

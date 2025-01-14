@@ -1,1 +1,1 @@
-export const mode = $state({ game: true });
+export const game = $state({ active: true, completed: false });
