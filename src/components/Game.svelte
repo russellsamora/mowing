@@ -7,7 +7,8 @@
 
 	const MAX_LENGTH = 1000;
 	const size = 10;
-	const targetCount = 100;
+	const obstacles = [17, 27, 36, 37, 63, 64, 73, 74, 75, 84, 85, 91];
+	const targetCount = size * size - obstacles.length;
 	let storage = localStore("pudding_mowing", {});
 	let position = $state([0, 0]);
 	let path = $state([[0, 0]]);
@@ -29,13 +30,9 @@
 		document.getElementById("results").classList.add("visible");
 	}
 
-	async function submit() {
-		const str = path.map((p) => p.join(",")).join("|");
-		if (str.length < MAX_LENGTH) {
-			storage.value = { path };
-			// const response = await server("submit", str);
-			// console.log(response);
-		}
+	function skip() {
+		storage.value.skipped = true;
+		reveal();
 	}
 
 	function onmove(key) {
@@ -46,34 +43,65 @@
 		else if (key === "ArrowLeft") dir = [-1, 0];
 		else if (key === "ArrowRight") dir = [1, 0];
 
-		position[0] += dir[0];
-		position[1] += dir[1];
+		let tempX = position[0] + dir[0];
+		let tempY = position[1] + dir[1];
 
-		position[0] = Math.max(0, Math.min(size - 1, position[0]));
-		position[1] = Math.max(0, Math.min(size - 1, position[1]));
+		// boundaries
+		tempX = Math.max(0, Math.min(size - 1, tempX));
+		tempY = Math.max(0, Math.min(size - 1, tempY));
+
+		// don't allow movement over obstacles
+		if (obstacles.includes(tempY * size + tempX)) return;
+
+		position = [tempX, tempY];
+
 		path.push([...position]);
 		visited[position.join(",")] = true;
 		// TODO get length of visited?
 	}
 
+	async function submit(alreadyCompleted) {
+		const str = path.map((p) => p.join(",")).join("|");
+
+		// TODO may need to refactor if we let them play again
+		if (str.length < MAX_LENGTH) {
+			if (!alreadyCompleted) {
+				storage.value.path = path;
+				// const response = await server("submit", str);
+				// storage.value.heuristic = response?.heuristic;
+			}
+		}
+	}
+
 	$effect(() => {
 		if (complete) {
+			const alreadyCompleted = storage.value.completed;
 			game.completed = true;
-			submit();
+			storage.value.completed = true;
+			submit(alreadyCompleted);
 			reveal();
+			setTimeout(() => {
+				document.getElementById("results").scrollIntoView();
+			}, 500);
 		}
 	});
 </script>
 
 <p class="skip">
 	<small>
-		<a href="#results" onclick={reveal}>just skip to results please</a>
-		<button onclick={submit}>test</button>
+		<a href="#results" onclick={skip}>just skip to results please</a>
 	</small>
 </p>
 
-<Grid {size} {path} perspective={true}></Grid>
-<Keypad {onmove} active={game.active}></Keypad>
+<div class="c" class:disable={!game.active}>
+	<div class="inner">
+		<Grid {size} {path} perspective={true} {obstacles}></Grid>
+		{#if game.active}<Keypad {onmove} active={game.active}></Keypad>{/if}
+	</div>
+	{#if complete}
+		<p class="message"><strong>Good job!</strong></p>
+	{/if}
+</div>
 
 <style>
 	.skip {
@@ -86,5 +114,24 @@
 
 	a {
 		color: var(--color-fg-light);
+	}
+
+	.c {
+		position: relative;
+	}
+
+	.disable {
+		pointer-events: none;
+	}
+
+	.disable .inner {
+		opacity: 0.2;
+	}
+
+	.message {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
 	}
 </style>

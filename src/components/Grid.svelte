@@ -1,12 +1,12 @@
 <script>
 	import { browser } from "$app/environment";
-	let { size = 10, path = [], perspective } = $props();
+	let { size = 10, path = [], perspective, obstacles = [] } = $props();
 
 	const defaultCells = Array(size ** 2)
 		.fill()
 		.map((_, i) => ({
 			pos: [i % size, Math.floor(i / size)],
-			obstacle: false,
+			obstacle: obstacles.includes(i),
 			visited: false
 		}));
 
@@ -54,7 +54,7 @@
 				data-y={y}
 			>
 				<div class="texture"></div>
-				<div class="grass"></div>
+				<div class="fg"></div>
 			</div>
 		{/each}
 	</div>
@@ -103,32 +103,17 @@
 	}
 
 	.cell {
-		background: linear-gradient(135deg, #008000, darkgreen);
-		/* background: green; */
 		position: relative;
+		background: linear-gradient(135deg, #008000, darkgreen);
 	}
 
 	.cell.visited {
-		/* background: yellowgreen; */
 		background: linear-gradient(135deg, yellowgreen, green);
 	}
 
-	.cell.active {
-		/* background: darkmagenta; */
+	.cell.obstacle {
+		background: linear-gradient(135deg, peru, brown);
 	}
-
-	/* .cell.active:after,
-	.cell.before:after {
-		position: absolute;
-		content: "";
-		top: 50%;
-		left: 50%;
-		width: 90%;
-		height: 90%;
-		transform: translate(-50%, -50%);
-		background: magenta;
-		border-radius: 25%;
-	} */
 
 	.texture {
 		position: absolute;
@@ -142,7 +127,7 @@
 		opacity: 0.75;
 	}
 
-	.grass {
+	.fg {
 		position: absolute;
 		top: 0;
 		left: 0;
@@ -150,16 +135,20 @@
 		height: 100%;
 		background: url("assets/images/grass.png");
 		pointer-events: none;
-		transform: scale(1) translateY(-10%);
-		display: none;
+		transform: translateY(-10%);
 	}
 
-	.visited .grass {
+	.visited .fg {
 		background: url("assets/images/grass-cut.png");
 	}
 
-	.obstacle {
-		background: linear-gradient(135deg, darkred, red);
+	.obstacle .fg {
+		background: url("assets/images/rock.png");
+		transform: translateY(0%);
+	}
+
+	.obstacle.visited .fg {
+		background: url("assets/images/rock.png");
 	}
 
 	.cube {
