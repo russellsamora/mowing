@@ -2,9 +2,13 @@
 	import Grid from "$components/Grid.svelte";
 	import Keypad from "$components/Keypad.svelte";
 	import { game } from "$runes/misc.svelte.js";
+	import localStore from "$runes/localStore.svelte.js";
+	import server from "$utils/server.js";
 
+	const MAX_LENGTH = 1000;
 	const size = 10;
 	const targetCount = 100;
+	let storage = localStore("pudding_mowing", {});
 	let position = $state([0, 0]);
 	let path = $state([[0, 0]]);
 	let visited = $state({});
@@ -25,9 +29,13 @@
 		document.getElementById("results").classList.add("visible");
 	}
 
-	function submit() {
+	async function submit() {
 		const str = path.map((p) => p.join(",")).join("|");
-		console.log(str);
+		if (str.length < MAX_LENGTH) {
+			storage.value = { path };
+			// const response = await server("submit", str);
+			// console.log(response);
+		}
 	}
 
 	function onmove(key) {
@@ -60,6 +68,7 @@
 <p class="skip">
 	<small>
 		<a href="#results" onclick={reveal}>just skip to results please</a>
+		<button onclick={submit}>test</button>
 	</small>
 </p>
 
