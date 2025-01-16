@@ -1,6 +1,5 @@
 /**
- * Do not edit directly
- * Generated on Tue, 31 May 2022 13:42:06 GMT
+ * Do not edit directly, this file was auto-generated.
  */
 
 :root {
@@ -13,22 +12,36 @@
   --category-gray: #BBBBBB;
   --color-black: #000000;
   --color-white: #ffffff;
-  --color-gray-50: #f7f7f7;
-  --color-gray-100: #efefef;
-  --color-gray-200: #dfdfdf;
-  --color-gray-300: #cacaca;
-  --color-gray-400: #a8a8a8;
-  --color-gray-500: #878787;
-  --color-gray-600: #6d6d6d;
-  --color-gray-700: #4e4e4e;
-  --color-gray-800: #373737;
-  --color-gray-900: #262626;
-  --color-gray-1000: #191919;
-  --color-purple: #a239ca;
-  --color-blue: #4717f6;
-  --color-green: #34a29e;
-  --color-red: #ff533d;
-  --color-yellow: #e5e338;
+  --color-gray-50: rgb(247, 247, 247);
+  --color-gray-100: rgb(239, 239, 239);
+  --color-gray-200: rgb(223, 223, 223);
+  --color-gray-300: rgb(202, 202, 202);
+  --color-gray-400: rgb(168, 168, 168);
+  --color-gray-500: rgb(135, 135, 135);
+  --color-gray-600: rgb(109, 109, 109);
+  --color-gray-700: rgb(78, 78, 78);
+  --color-gray-800: rgb(55, 55, 55);
+  --color-gray-900: rgb(38, 38, 38);
+  --color-gray-1000: rgb(25, 25, 25);
+  --color-green-light: #63c74d;
+  --color-green-medium: #3e8948;
+  --color-green-dark: #265c42;
+  --color-pink-light: #f6757a;
+  --color-pink-medium: #b55088;
+  --color-pink-dark: #68386c;
+  --color-brown-dark: #743f39;
+  --color-brown-medium: #b86f50;
+  --color-brown-light: #e4a672;
+  --color-red: #ff0044;
+  --color-orange-medium: #e43b44;
+  --color-orange-dark: #9e2835;
+  --color-grayblue-light: #c0cbdc;
+  --color-grayblue-medium: #8b9bb4;
+  --color-grayblue-dark: #5a6988;
+  --color-grayblue-darkest: #262b44;
+  --color-blue-lightest: #cefafd;
+  --color-blue-light: #2ce8f5;
+  --color-blue-medium: #0095e9;
   --12px: 0.75rem;
   --14px: 0.875rem;
   --16px: 1rem;

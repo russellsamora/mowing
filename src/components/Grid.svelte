@@ -36,7 +36,7 @@
 </script>
 
 <figure
-	style="--size: {size}; --margin: {offsetWidth * -0.2}px;"
+	style="--size: {size}; --margin: {offsetWidth * -0.25}px;"
 	class:perspective
 	bind:offsetWidth
 >
@@ -62,6 +62,8 @@
 		<div class="cube" style="--x: {latest[0]}; --y: {latest[1]};">
 			<div class="face top"></div>
 			<div class="face front"></div>
+			<div class="face above"></div>
+			<div class="face above-side"></div>
 		</div>
 	</div>
 </figure>
@@ -83,6 +85,7 @@
 	}
 
 	.grid {
+		position: relative;
 		aspect-ratio: 1;
 		display: grid;
 		grid-template-columns: repeat(var(--size), 1fr);
@@ -104,15 +107,27 @@
 
 	.cell {
 		position: relative;
-		background: linear-gradient(135deg, #008000, darkgreen);
+		background: linear-gradient(
+			135deg,
+			var(--color-green-medium),
+			var(--color-green-dark)
+		);
 	}
 
 	.cell.visited {
-		background: linear-gradient(135deg, yellowgreen, green);
+		background: linear-gradient(
+			135deg,
+			var(--color-green-light),
+			var(--color-green-medium)
+		);
 	}
 
 	.cell.obstacle {
-		background: linear-gradient(135deg, peru, brown);
+		background: linear-gradient(
+			135deg,
+			var(--color-brown-medium),
+			var(--color-brown-dark)
+		);
 	}
 
 	.texture {
@@ -121,7 +136,9 @@
 		left: 0;
 		width: 100%;
 		height: 100%;
-		background: url("assets/images/texture.png");
+		background-image: url("assets/images/texture.png");
+		background-size: cover;
+		background-repeat: no-repeat;
 		box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
 		pointer-events: none;
 		opacity: 0.75;
@@ -133,22 +150,24 @@
 		left: 0;
 		width: 100%;
 		height: 100%;
-		background: url("assets/images/grass.png");
+		background-image: url("assets/images/grass.png");
+		background-size: cover;
+		background-repeat: no-repeat;
 		pointer-events: none;
 		transform: translateY(-10%);
 	}
 
 	.visited .fg {
-		background: url("assets/images/grass-cut.png");
+		background-image: url("assets/images/grass-cut.png");
 	}
 
 	.obstacle .fg {
-		background: url("assets/images/rock.png");
+		background-image: url("assets/images/rock.png");
 		transform: translateY(0%);
 	}
 
 	.obstacle.visited .fg {
-		background: url("assets/images/rock.png");
+		background-image: url("assets/images/rock.png");
 	}
 
 	.cube {
@@ -170,33 +189,47 @@
 
 	.face {
 		position: absolute;
-		width: 100%;
-		height: 100%;
+		width: 90%;
+		height: 90%;
 		backface-visibility: hidden;
+		top: 0%;
+		left: 5%;
 	}
 
 	.face.top {
-		width: 100%;
-		height: 100%;
+		width: 90%;
+		height: 90%;
 		transform: translateZ(var(--face));
-		background: darkmagenta;
+		background: var(--color-orange-dark);
 		border-radius: 8px;
 	}
 
 	.face.front {
-		width: 100%;
-		height: 75%;
-		transform: rotateX(-90deg) translateZ(var(--face)) translateY(-8px);
+		width: 90%;
+		height: 65%;
+		transform: rotateX(-90deg) translateZ(var(--face));
 		border-radius: 8px;
-		background: magenta;
+		background: var(--color-orange-medium);
 	}
 
-	@keyframes spin {
-		from {
-			transform: rotateX(45deg) rotateY(0deg) rotateZ(0deg);
-		}
-		to {
-			transform: rotateX(45deg) rotateY(360deg) rotateZ(0deg);
-		}
+	.face.above {
+		width: 40%;
+		height: 40%;
+		top: 20%;
+		left: 30%;
+		transform: rotateX(-90deg) translateZ(var(--face));
+		border-radius: 50%;
+		background: var(--color-orange-dark);
+	}
+
+	.face.above-side {
+		width: 40%;
+		height: 40%;
+		top: 10%;
+		left: 30%;
+		transform: rotateX(-90deg) translateZ(var(--face));
+		border-radius: 33%;
+		border: 1px solid var(--color-orange-dark);
+		background: var(--color-orange-medium);
 	}
 </style>

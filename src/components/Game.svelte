@@ -8,7 +8,7 @@
 	const MAX_LENGTH = 1000;
 	const size = 10;
 	const obstacles = [17, 27, 36, 37, 63, 64, 73, 74, 75, 84, 85, 91];
-	const targetCount = size * size - obstacles.length;
+	const targetCount = size * size - obstacles.length + 1;
 	let storage = localStore("pudding_mowing", {});
 	let position = $state([0, 0]);
 	let path = $state([[0, 0]]);
@@ -95,6 +95,7 @@
 
 <div class="c" class:disable={!game.active}>
 	<div class="inner">
+		<p class="steps">moves: {path.length}</p>
 		<Grid {size} {path} perspective={true} {obstacles}></Grid>
 		{#if game.active}<Keypad {onmove} active={game.active}></Keypad>{/if}
 	</div>
@@ -133,5 +134,13 @@
 		top: 50%;
 		left: 50%;
 		transform: translate(-50%, -50%);
+	}
+
+	.steps {
+		margin: 12px auto 0 auto;
+		max-width: var(--grid-max-width);
+		text-align: center;
+		font-size: var(--14px);
+		color: var(--color-fg-light);
 	}
 </style>
