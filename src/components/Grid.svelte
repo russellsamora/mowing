@@ -1,6 +1,12 @@
 <script>
 	import { browser } from "$app/environment";
-	let { size = 10, path = [], perspective, obstacles = [] } = $props();
+	let {
+		size = 10,
+		path = [],
+		perspective,
+		obstacles = [],
+		game = false
+	} = $props();
 
 	const defaultCells = Array(size ** 2)
 		.fill()
@@ -20,68 +26,80 @@
 		return all;
 	});
 
-	let latest = $derived(path[path.length - 1]);
+	let latest = $derived(path[path.length - 1] || [0, 0]);
 	let offsetWidth = $state(0);
-
-	// let currentCell = $state({ left: 0, top: 0 });
-
-	// $effect(() => {
-	// 	const cell = document.querySelector(
-	// 		`.cell[data-x="${latest.x}"][data-y="${latest.y}"]`
-	// 	);
-
-	// 	currentCell.left = `${cell.offsetLeft}px`;
-	// 	currentCell.top = `${cell.offsetTop}px`;
-	// });
+	let nodes = $derived(!game);
 </script>
 
 <figure
 	style="--size: {size}; --margin: {offsetWidth * -0.25}px;"
 	class:perspective
+	class:nodes
 	bind:offsetWidth
 >
-	<div class="grid">
-		{#each cells as { obstacle, visited, pos }}
-			{@const x = pos[0]}
-			{@const y = pos[1]}
-			{@const active = x === latest[0] && y === latest[1]}
-			<div
-				class="cell"
-				class:obstacle
-				class:visited
-				class:active
-				data-x={x}
-				data-y={y}
-			>
-				<div class="texture"></div>
-				<div class="fg"></div>
-			</div>
-		{/each}
-	</div>
-	<div class="grid mower">
-		<div class="cube" style="--x: {latest[0]}; --y: {latest[1]};">
-			<div class="face top"></div>
-			<div class="face front"></div>
-			<div class="face above"></div>
-			<div class="face above-side"></div>
+	<div class="inner">
+		{#if !game && path.length > 1}
+			<svg viewbox="0 0 10 10">
+				{#each path as [x, y], i}
+					{@const x1 = x + 0.5}
+					{@const y1 = y + 0.5}
+					{@const x2 = (path[i + 1] ? path[i + 1][0] : x) + 0.5}
+					{@const y2 = (path[i + 1] ? path[i + 1][1] : y) + 0.5}
+					<path d="M {x1} {y1} L {x2} {y2}" />
+				{/each}
+			</svg>
+		{/if}
+
+		<div class="grid">
+			{#each cells as { obstacle, visited, pos }}
+				{@const x = pos[0]}
+				{@const y = pos[1]}
+				{@const active = x === latest[0] && y === latest[1]}
+				<div
+					class="cell"
+					class:obstacle
+					class:visited
+					class:active
+					data-x={x}
+					data-y={y}
+				>
+					<div class="texture"></div>
+					<div class="fg"></div>
+				</div>
+			{/each}
 		</div>
+
+		{#if game}
+			<div class="grid mower">
+				<div class="cube" style="--x: {latest[0]}; --y: {latest[1]};">
+					<div class="face top"></div>
+					<div class="face front"></div>
+					<div class="face above"></div>
+					<div class="face above-side"></div>
+				</div>
+			</div>
+		{/if}
 	</div>
 </figure>
 
 <style>
 	figure {
-		width: var(--grid-width);
+		width: 100%;
 		max-width: var(--grid-max-width);
-		margin: 0 auto;
 		perspective: calc(var(--grid-width) * 2);
 		transition: all 0.5s ease-in-out;
 		position: relative;
 	}
 
+	.inner {
+		position: relative;
+		transform-origin: 0 0;
+	}
+
 	figure.perspective {
 		perspective-origin: 50% 100%;
 		transform: scale(0.9);
-		margin-top: var(--margin);
+		margin-top: -3.25%;
 	}
 
 	.grid {
@@ -101,7 +119,7 @@
 		height: 100%;
 	}
 
-	.perspective .grid {
+	.perspective .inner {
 		transform: rotateX(40deg);
 	}
 
@@ -171,20 +189,12 @@
 	}
 
 	.cube {
-		/* position: absolute; */
-		/* width: var(--width);
-		height: var(--width); */
 		transform-style: preserve-3d;
 		transform-origin: center bottom;
 		transform: rotateX(30deg) rotateY(0deg) rotateZ(0deg) translateY(0)
 			scale(1, 1.5);
 		grid-row: calc(var(--y) + 1);
 		grid-column: calc(var(--x) + 1);
-		/* set position on grid with x,y */
-
-		/* top: calc(var(--y) * var(--width)); */
-		/* left: calc(var(--x) * var(--width)); */
-		/* animation: infinite 5s spin linear; */
 	}
 
 	.face {
@@ -231,5 +241,52 @@
 		border-radius: 33%;
 		border: 1px solid var(--color-orange-dark);
 		background: var(--color-orange-medium);
+	}
+
+	/* nodes mode */
+	.nodes .grid {
+		border: 0.5px solid var(--color-gray-300);
+	}
+
+	.nodes .cell {
+		border: 0.5px solid var(--color-gray-300);
+		background: none;
+	}
+
+	.nodes .texture {
+		display: none;
+	}
+
+	.nodes .fg {
+		background: none;
+		width: 20%;
+		height: 20%;
+		border-radius: 50%;
+		border: 1px solid var(--color-fg-light);
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+	}
+
+	.nodes .obstacle {
+		background: var(--color-fg-light);
+		/* background: var(--color-fg-light); */
+		/* border-radius: 0; */
+	}
+
+	svg {
+		display: block;
+		width: 100%;
+		height: 100%;
+		position: absolute;
+		top: 0;
+		left: 0;
+	}
+
+	path {
+		stroke: var(--path);
+		stroke-width: 0.2;
+		stroke-linecap: round;
 	}
 </style>

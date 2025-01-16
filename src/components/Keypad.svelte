@@ -21,7 +21,7 @@
 
 <svelte:window onkeydown={onKeydown} />
 
-<div class="c" bind:offsetWidth style="--margin: {offsetWidth * -0.1}px;">
+<div class="c" bind:offsetWidth style="--margin: {offsetWidth * -0.3}px;">
 	<div class="keypad">
 		<div class="row">
 			<button onpointerdown={() => onmove("ArrowUp")}>&uarr;</button>

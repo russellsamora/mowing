@@ -4,16 +4,17 @@
 	import { game } from "$runes/misc.svelte.js";
 	import localStore from "$runes/localStore.svelte.js";
 	import server from "$utils/server.js";
+	import obstacles from "$data/obstacles.json";
 
 	const MAX_LENGTH = 1000;
 	const size = 10;
-	const obstacles = [17, 27, 36, 37, 63, 64, 73, 74, 75, 84, 85, 91];
-	const targetCount = size * size - obstacles.length + 1;
+
+	const targetCount = size * size - obstacles.length;
 	let storage = localStore("pudding_mowing", {});
 	let position = $state([0, 0]);
 	let path = $state([[0, 0]]);
-	let visited = $state({});
-	let visitedCount = $derived(Object.keys(visited).length + 1);
+	let visited = $state({ "0,0": true });
+	let visitedCount = $derived(Object.keys(visited).length);
 	let complete = $derived(visitedCount === targetCount);
 
 	function reveal() {
@@ -61,15 +62,22 @@
 	}
 
 	async function submit(alreadyCompleted) {
-		const str = path.map((p) => p.join(",")).join("|");
+		try {
+			const str = path.map((p) => p.join(",")).join("|");
 
-		// TODO may need to refactor if we let them play again
-		if (str.length < MAX_LENGTH) {
-			if (!alreadyCompleted) {
+			if (str.length < MAX_LENGTH) {
 				storage.value.path = path;
-				// const response = await server("submit", str);
-				// storage.value.heuristic = response?.heuristic;
+				if (!alreadyCompleted) {
+					// TODO if we can do heuristic on front end, only submit if not already completed
+					// const response = await server("submit", str);
+					// storage.value.heuristic = response?.heuristic;
+				}
+			} else {
+				// TODO handle too long
 			}
+		} catch (err) {
+			console.error(err);
+			// TODO handle err submission (only matters if heuristic on back end)
 		}
 	}
 
@@ -96,7 +104,9 @@
 <div class="c" class:disable={!game.active}>
 	<div class="inner">
 		<p class="steps">moves: {path.length}</p>
-		<Grid {size} {path} perspective={true} {obstacles}></Grid>
+		<div class="g">
+			<Grid {size} {path} perspective={true} {obstacles} game={true}></Grid>
+		</div>
 		{#if game.active}<Keypad {onmove} active={game.active}></Keypad>{/if}
 	</div>
 	{#if complete}
@@ -121,6 +131,11 @@
 		position: relative;
 	}
 
+	.g {
+		width: var(--grid-width);
+		margin: 0 auto;
+	}
+
 	.disable {
 		pointer-events: none;
 	}
@@ -131,13 +146,13 @@
 
 	.message {
 		position: absolute;
-		top: 50%;
+		top: 33%;
 		left: 50%;
 		transform: translate(-50%, -50%);
 	}
 
 	.steps {
-		margin: 12px auto 0 auto;
+		margin: 32px auto 0 auto;
 		max-width: var(--grid-max-width);
 		text-align: center;
 		font-size: var(--14px);
