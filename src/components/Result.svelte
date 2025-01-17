@@ -65,11 +65,12 @@
 		justify-content: center;
 		max-width: 800px;
 		margin: 0 auto;
+		flex-direction: column;
 	}
 
 	.g {
 		padding: 0 8px;
-		width: 50%;
+		width: 100%;
 	}
 
 	.inner p {
@@ -88,5 +89,15 @@
 
 	.optimal {
 		color: var(--color-green-medium);
+	}
+
+	@media (min-width: 640px) {
+		.inner {
+			flex-direction: row;
+		}
+
+		.g {
+			width: 50%;
+		}
 	}
 </style>
