@@ -39,7 +39,9 @@
 		"gray-1000": {
 			"value": "rgb(25, 25, 25)"
 		},
-
+		"green-lightest": {
+			"value": "#4ca658"
+		},
 		"green-light": {
 			"value": "#63c74d"
 		},
@@ -70,6 +72,9 @@
 		"red": {
 			"value": "#ff0044"
 		},
+		"orange-lightest": {
+			"value": "#eb6d72"
+		},
 		"orange-medium": {
 			"value": "#e22b33"
 		},
@@ -80,7 +85,7 @@
 			"value": "#c0cbdc"
 		},
 		"grayblue-medium": {
-			"value": "#8b9bb4"
+			"value": "#8596b0"
 		},
 		"grayblue-dark": {
 			"value": "#5a6988"

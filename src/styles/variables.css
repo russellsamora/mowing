@@ -23,8 +23,9 @@
   --color-gray-800: rgb(55, 55, 55);
   --color-gray-900: rgb(38, 38, 38);
   --color-gray-1000: rgb(25, 25, 25);
+  --color-green-lightest: #4ca658;
   --color-green-light: #63c74d;
-  --color-green-medium: #3e8948;
+  --color-green-medium: #3c8446;
   --color-green-dark: #265c42;
   --color-pink-light: #f6757a;
   --color-pink-medium: #b55088;
@@ -33,10 +34,11 @@
   --color-brown-medium: #b86f50;
   --color-brown-light: #e4a672;
   --color-red: #ff0044;
-  --color-orange-medium: #e43b44;
+  --color-orange-lightest: #eb6d72;
+  --color-orange-medium: #e22b33;
   --color-orange-dark: #9e2835;
   --color-grayblue-light: #c0cbdc;
-  --color-grayblue-medium: #8b9bb4;
+  --color-grayblue-medium: #8596b0;
   --color-grayblue-dark: #5a6988;
   --color-grayblue-darkest: #262b44;
   --color-blue-lightest: #cefafd;

@@ -1,12 +1,26 @@
 <script>
 	import { browser } from "$app/environment";
+	import { scaleLinear, interpolateRgb, interpolateHcl } from "d3";
+	import { draw, fade } from "svelte/transition";
+
 	let {
 		size = 10,
 		path = [],
 		perspective,
 		obstacles = [],
-		game = false
+		game = false,
+		active = true,
+		color
 	} = $props();
+
+	const colorScale = $state({
+		user: scaleLinear()
+			.interpolate(interpolateHcl)
+			.range(["#9e2835", "#eb6d72"]),
+		solution: scaleLinear()
+			.interpolate(interpolateHcl)
+			.range(["#265c42", "#4ca658"])
+	});
 
 	const defaultCells = Array(size ** 2)
 		.fill()
@@ -29,6 +43,23 @@
 	let latest = $derived(path[path.length - 1] || [0, 0]);
 	let offsetWidth = $state(0);
 	let nodes = $derived(!game);
+	let animating = $state(false);
+
+	let pathD = $derived.by(() => {
+		const str = path.map(([x, y], i) => {
+			const x1 = x + 0.5;
+			const y1 = y + 0.5;
+			const x2 = (path[i + 1] ? path[i + 1][0] : x) + 0.5;
+			const y2 = (path[i + 1] ? path[i + 1][1] : y) + 0.5;
+			return `M ${x1} ${y1} L ${x2} ${y2}`;
+		});
+
+		return str.join("");
+	});
+
+	export const animate = () => {
+		animating = true;
+	};
 </script>
 
 <figure
@@ -40,13 +71,41 @@
 	<div class="inner">
 		{#if !game && path.length > 1}
 			<svg viewbox="0 0 10 10">
-				{#each path as [x, y], i}
-					{@const x1 = x + 0.5}
-					{@const y1 = y + 0.5}
-					{@const x2 = (path[i + 1] ? path[i + 1][0] : x) + 0.5}
-					{@const y2 = (path[i + 1] ? path[i + 1][1] : y) + 0.5}
-					<path d="M {x1} {y1} L {x2} {y2}" />
-				{/each}
+				{#if animating}
+					{#each path as [x, y], i (i)}
+						{@const x1 = x + 0.5}
+						{@const y1 = y + 0.5}
+						{@const x2 = (path[i + 1] ? path[i + 1][0] : x) + 0.5}
+						{@const y2 = (path[i + 1] ? path[i + 1][1] : y) + 0.5}
+						<path
+							transition:fade|global={{ delay: 500 + i * 50, duration: 50 }}
+							class="line"
+							d={`M ${x1} ${y1} L ${x2} ${y2}`}
+							style:stroke={colorScale[color](i / path.length)}
+						></path>
+						<!-- {#if i < path.length - 1}
+						{@const angle = Math.atan2(y2 - y1, x2 - x1)}
+						{@const size = 0.15}
+						{@const xTip = x1 + size * Math.cos(angle) * 2}
+						{@const yTip = y1 + size * Math.sin(angle) * 2}
+						{@const xLeft = x1 + size * Math.cos(angle + Math.PI * 0.2)}
+						{@const yLeft = y1 + size * Math.sin(angle + Math.PI * 0.2)}
+						{@const xRight = x1 + size * Math.cos(angle - Math.PI * 0.2)}
+						{@const yRight = y1 + size * Math.sin(angle - Math.PI * 0.2)}
+						<path
+							class="arrow"
+							d={`M ${xLeft} ${yLeft} L ${xTip} ${yTip} L ${xRight} ${yRight}`}
+						></path>
+					{/if} -->
+					{/each}
+				{/if}
+				<!-- {#if pathD && mounted}
+					<path
+						transition:draw|global={{ delay: 1000, duration: 1000 }}
+						class="line"
+						d={pathD}
+					></path>
+				{/if} -->
 			</svg>
 		{/if}
 
@@ -98,8 +157,8 @@
 
 	figure.perspective {
 		perspective-origin: 50% 100%;
-		transform: scale(0.9);
-		margin-top: -3.25%;
+		transform: scale(0.75);
+		margin-top: -10%;
 	}
 
 	.grid {
@@ -120,7 +179,7 @@
 	}
 
 	.perspective .inner {
-		transform: rotateX(40deg);
+		transform: rotateX(35deg);
 	}
 
 	.cell {
@@ -245,11 +304,11 @@
 
 	/* nodes mode */
 	.nodes .grid {
-		border: 0.5px solid var(--color-gray-300);
+		/* border: 0.5px solid var(--color-gray-500); */
 	}
 
 	.nodes .cell {
-		border: 0.5px solid var(--color-gray-300);
+		/* border: 0.5px solid var(--color-gray-500); */
 		background: none;
 	}
 
@@ -262,7 +321,9 @@
 		width: 20%;
 		height: 20%;
 		border-radius: 50%;
-		border: 1px solid var(--color-fg-light);
+		border: 1px solid var(--color-gray-500);
+		background: var(--color-bg);
+		/* opacity: 0.5; */
 		position: absolute;
 		top: 50%;
 		left: 50%;
@@ -270,9 +331,12 @@
 	}
 
 	.nodes .obstacle {
-		background: var(--color-fg-light);
-		/* background: var(--color-fg-light); */
-		/* border-radius: 0; */
+		background: var(--color-gray-500);
+		border: 0.5px solid var(--color-bg);
+	}
+
+	.nodes .obstacle .fg {
+		display: none;
 	}
 
 	svg {
@@ -284,9 +348,18 @@
 		left: 0;
 	}
 
-	path {
-		stroke: var(--path);
-		stroke-width: 0.2;
+	path.line {
+		stroke-width: 0.5;
 		stroke-linecap: round;
+		/* stroke-opacity: 0.2; */
+		fill: none;
+		stroke: var(--path-start);
+	}
+
+	path.arrow {
+		stroke-width: 0.1;
+		/* stroke-linecap: round; */
+		fill: none;
+		stroke: var(--path-start);
 	}
 </style>

@@ -38,9 +38,13 @@
 		padding: 0 16px;
 	}
 
-	:global(.c p, .c h1, .c figure) {
+	:global(.c p, .c h1) {
 		margin: 32px auto;
 		max-width: var(--grid-max-width);
+	}
+
+	:global(.c figure) {
+		max-width: 800px;
 	}
 
 	@media (min-width: 960px) {

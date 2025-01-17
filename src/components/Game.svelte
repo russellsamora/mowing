@@ -67,6 +67,7 @@
 
 			if (str.length < MAX_LENGTH) {
 				storage.value.path = path;
+				game.path = $state.snapshot(path);
 				if (!alreadyCompleted) {
 					// TODO if we can do heuristic on front end, only submit if not already completed
 					// const response = await server("submit", str);
