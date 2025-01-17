@@ -21,6 +21,11 @@
 <div class="c" use:inView onenter={() => (visible = true)}>
 	<div class="inner">
 		{#if game.path.length}
+			<p>
+				<small
+					><strong class="user">Your path</strong> ({game.path.length} moves)</small
+				>
+			</p>
 			<div class="g">
 				<Grid
 					bind:this={gridUser}
@@ -34,6 +39,11 @@
 			</div>
 		{/if}
 		<div class="g">
+			<p>
+				<small>
+					<strong class="optimal">Optimal path</strong> ({solution.length} moves)
+				</small>
+			</p>
 			<Grid
 				bind:this={gridSolution}
 				{size}
@@ -45,6 +55,8 @@
 			></Grid>
 		</div>
 	</div>
+
+	<p class="replay"><button>Replay</button></p>
 </div>
 
 <style>
@@ -58,5 +70,23 @@
 	.g {
 		padding: 0 8px;
 		width: 50%;
+	}
+
+	.inner p {
+		margin: 0;
+		text-align: center;
+	}
+
+	p.replay {
+		text-align: center;
+		margin-top: 16px;
+	}
+
+	.user {
+		color: var(--color-orange-medium);
+	}
+
+	.optimal {
+		color: var(--color-green-medium);
 	}
 </style>

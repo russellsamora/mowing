@@ -304,11 +304,11 @@
 
 	/* nodes mode */
 	.nodes .grid {
-		/* border: 0.5px solid var(--color-gray-500); */
+		border: 0.5px solid var(--color-gray-500);
 	}
 
 	.nodes .cell {
-		/* border: 0.5px solid var(--color-gray-500); */
+		border: 0.5px solid var(--color-gray-100);
 		background: none;
 	}
 
@@ -349,7 +349,7 @@
 	}
 
 	path.line {
-		stroke-width: 0.5;
+		stroke-width: 0.4;
 		stroke-linecap: round;
 		/* stroke-opacity: 0.2; */
 		fill: none;

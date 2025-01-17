@@ -113,6 +113,10 @@ p {
 	font-weight: 400;
 }
 
+strong {
+	font-weight: 800;
+}
+
 #results {
 	display: none;
 	padding-top: 32px;
@@ -132,4 +136,10 @@ span.you.visible, span.skip.visible {
 
 main p:first-of-type {
 	margin-top: 0;
+}
+
+button {
+	text-transform: uppercase;
+	font-size: 0.75em;
+	font-weight: 800;
 }
