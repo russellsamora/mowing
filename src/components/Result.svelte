@@ -21,12 +21,12 @@
 <div class="c" use:inView onenter={() => (visible = true)}>
 	<div class="inner">
 		{#if game.path.length}
-			<p>
-				<small
-					><strong class="user">Your path</strong> ({game.path.length} moves)</small
-				>
-			</p>
 			<div class="g">
+				<p>
+					<small
+						><strong class="user">Your path</strong> ({game.path.length} moves)</small
+					>
+				</p>
 				<Grid
 					bind:this={gridUser}
 					{size}
