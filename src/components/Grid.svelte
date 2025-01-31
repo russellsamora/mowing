@@ -213,7 +213,7 @@
 		left: 0;
 		width: 100%;
 		height: 100%;
-		background-image: url("assets/images/texture.png");
+		background-image: url("/assets/images/texture.png");
 		background-size: cover;
 		background-repeat: no-repeat;
 		box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
@@ -227,7 +227,7 @@
 		left: 0;
 		width: 100%;
 		height: 100%;
-		background-image: url("assets/images/grass.png");
+		background-image: url("/assets/images/grass.png");
 		background-size: cover;
 		background-repeat: no-repeat;
 		pointer-events: none;
@@ -235,16 +235,16 @@
 	}
 
 	.visited .fg {
-		background-image: url("assets/images/grass-cut.png");
+		background-image: url("/assets/images/grass-cut.png");
 	}
 
 	.obstacle .fg {
-		background-image: url("assets/images/rock.png");
+		background-image: url("/assets/images/rock.png");
 		transform: translateY(0%);
 	}
 
 	.obstacle.visited .fg {
-		background-image: url("assets/images/rock.png");
+		background-image: url("/assets/images/rock.png");
 	}
 
 	.cube {
