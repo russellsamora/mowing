@@ -7,6 +7,7 @@
 	import obstacles from "$data/obstacles.json";
 
 	const MAX_LENGTH = 1000;
+	const MAX_MOVES = 200;
 	const size = 10;
 
 	const targetCount = size * size - obstacles.length;
@@ -16,8 +17,13 @@
 	let visited = $state({ "0,0": true });
 	let visitedCount = $derived(Object.keys(visited).length);
 	let complete = $derived(visitedCount === targetCount);
+	let exceeded = $derived(path.length >= MAX_MOVES);
+	let showMessage = $derived(complete || exceeded);
+	let message = $derived(
+		showMessage ? (complete ? "Good job!" : "Too many moves!") : ""
+	);
 
-	function reveal() {
+	function reveal(delay = 17) {
 		game.active = false;
 		if (complete)
 			document
@@ -29,6 +35,10 @@
 				.forEach((el) => el.classList.add("visible"));
 
 		document.getElementById("results").classList.add("visible");
+
+		setTimeout(() => {
+			document.getElementById("results").scrollIntoView();
+		}, delay);
 	}
 
 	function skip() {
@@ -58,12 +68,12 @@
 
 		path.push([...position]);
 		visited[position.join(",")] = true;
-		// TODO get length of visited?
 	}
 
 	async function submit(alreadyCompleted) {
 		try {
 			const str = path.map((p) => p.join(",")).join("|");
+			window.xxx = JSON.stringify(path);
 			if (str.length < MAX_LENGTH) {
 				storage.value.path = path;
 				game.path = $state.snapshot(path);
@@ -82,22 +92,19 @@
 	}
 
 	$effect(() => {
-		if (complete) {
+		if (showMessage) {
 			const alreadyCompleted = storage.value.completed;
 			game.completed = true;
 			storage.value.completed = true;
-			submit(alreadyCompleted);
-			reveal();
-			setTimeout(() => {
-				document.getElementById("results").scrollIntoView();
-			}, 500);
+			if (complete) submit(alreadyCompleted);
+			reveal(500);
 		}
 	});
 </script>
 
 <p class="skip">
 	<small>
-		<a href="#results" onclick={skip}>just skip to results please</a>
+		<button class="link" onclick={skip}>just skip to results please</button>
 	</small>
 </p>
 
@@ -109,8 +116,8 @@
 		</div>
 		{#if game.active}<Keypad {onmove} active={game.active}></Keypad>{/if}
 	</div>
-	{#if complete}
-		<p class="message"><strong>Good job!</strong></p>
+	{#if showMessage}
+		<p class="message"><strong>{message}</strong></p>
 	{/if}
 </div>
 
@@ -121,10 +128,6 @@
 		z-index: var(--z-top);
 		margin: 0 auto;
 		margin-top: -24px;
-	}
-
-	a {
-		color: var(--color-fg-light);
 	}
 
 	.c {
@@ -157,5 +160,13 @@
 		text-align: center;
 		font-size: var(--14px);
 		color: var(--color-fg-light);
+	}
+
+	button.link {
+		background: none;
+		border: none;
+		color: var(--color-fg-light);
+		text-transform: lowercase;
+		font-weight: normal;
 	}
 </style>

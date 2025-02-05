@@ -26,9 +26,9 @@ mark {
 	padding: 0 4px;
 }
 
-a {
+a, .link {
 	color: var(--color-link, blue);
-	text-decoration: 2px underline var(--color-link, blue);
+	text-decoration: 2px underline currentColor;
 }
 
 

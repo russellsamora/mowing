@@ -16,10 +16,10 @@
 	const colorScale = $state({
 		user: scaleLinear()
 			.interpolate(interpolateHcl)
-			.range(["#9e2835", "#eb6d72"]),
+			.range(["#eb6d72", "#9e2835"]),
 		solution: scaleLinear()
 			.interpolate(interpolateHcl)
-			.range(["#265c42", "#4ca658"])
+			.range(["#4ca658", "#265c42"])
 	});
 
 	const defaultCells = Array(size ** 2)
